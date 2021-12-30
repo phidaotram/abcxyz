@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <ul id="demo"></ul>
+    <input type="number" name="" id="input-id">
+    <input type="number" name="" id="input-province">
+    <button onclick="getData()">Get data</button>
+    <button type="button" onclick="document.location.load()">Reset</button>
+    <script>
+        var biendem = 1;
+        var id
+        var provinceid
+        var mahocsinh = "";
+        const url = "https://hocbadientu.vnedu.vn/sllservices/index.php";
+
+        function totalScore() {
+            $.get(url, {
+                    call: "solienlac.getSodiem",
+                    mahocsinh: mahocsinh,
+                    namhoc: 2021,
+                    tinh_id: provinceid
+                },
+                function (data) {
+                    let dataObject = JSON.parse(data);
+                    console.log(dataObject.diem);
+                }
+            );
+        }
+
+        function getData() {
+            id = $("#input-id").val();
+            provinceid = $("#input-province").val();
+            $.get(`https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.search&search=${id}&tinh_id=${provinceid}`,
+                function (data) {
+                    let dataObject = JSON.parse(data);
+                    console.log(id);
+                    for (var index of dataObject) {
+                        $("#demo").append(`<li>Tên học sinh thứ ${biendem}: ${index.full_name}</li>`);
+                        $("#demo").append(`<li>Tên lớp thứ ${biendem}: ${index.ten_lop}</li>`);
+                        $("#demo").append(`<li>Tên trường thứ ${biendem}: ${index.ten_truong}</li>`);
+                        $("#demo").append(`<li>Tên cấp thứ ${biendem}: ${index.cap}</li>`);
+                        $("#demo").append(`<li>Tên huyện thứ ${biendem}: ${index.ten_huyen}</li>`);
+                        $("#demo").append(`<li>Tên thành phố thứ ${biendem}: ${index.ten_tinh}</li>`);
+                        $("#demo").append(`<li>Năm học thứ ${biendem}: ${index.nam_hoc}</li>`);
+                        $("#demo").append(`<li>Mã học sinh thứ ${biendem}: ${index.ma_hoc_sinh}</li>`);
+                        biendem++;
+                    }
+                    mahocsinh = dataObject[dataObject.length - 1].ma_hoc_sinh;
+                    // console.log(data);
+                    // data = [""]
+                    $.get(`https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.checkSll&mahocsinh=${mahocsinh}&tinh_id=${provinceid}&password=${id}&namhoc=2021`,
+                        totalScore);
+                }
+            );
+        }
+    </script>
+</body>
+
+</html>
