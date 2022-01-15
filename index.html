@@ -12,7 +12,7 @@
 
 <body>
     <ul id="demo"></ul>
-    <input type="number" name="" id="input-id" placeholder="Số điện thoại" value="0983157153"> 
+    <input type="number" name="" id="input-id" placeholder="Số điện thoại" value="0983157153">
     <input type="number" name="" id="input-province" placeholder="Mã số tỉnh" value="15">
     <button onclick="getData()">Get data</button>
     <button type="button" onclick="document.location.load()">Reset</button>
@@ -21,20 +21,41 @@
         var id
         var provinceid
         var mahocsinh = "";
+        var cookie = "PHPSESSID=abc123";
         const url = "https://hocbadientu.vnedu.vn/sllservices/index.php";
 
         function totalScore() {
-            $.get(url, {
+            $.ajax({
+                url: url,
+                type:"GET",
+                data: {
                     call: "solienlac.getSodiem",
                     mahocsinh: mahocsinh,
                     namhoc: 2021,
                     tinh_id: provinceid
                 },
-                function (data) {
-                    let dataObject = JSON.parse(data);
-                    console.log(dataObject);
+                xhrFields: {
+                    withCredentials: true,
+                },
+                crossDomain: true,
+                headers: {
+                    "Cookie": cookie,
+                    "__Cookie": cookie
                 }
-            );
+            }).done((data) => {
+                let dataObject = JSON.parse(data);
+                console.log(dataObject);
+            });
+            // $.get(url, {
+            //         call: "solienlac.getSodiem",
+            //         mahocsinh: mahocsinh,
+            //         namhoc: 2021,
+            //         tinh_id: provinceid
+            //     },
+            //     function (data) {
+
+            //     }
+            // );
         }
 
         function getData() {
@@ -54,17 +75,31 @@
                         $("#demo").append(`<li>Năm học [${biendem}]: ${index.nam_hoc}</li>`);
                         $("#demo").append(`<li>Mã học sinh [${biendem}]: ${index.ma_hoc_sinh}</li>`);
                         biendem++;
+                        // data = [""
                     }
                     mahocsinh = dataObject[dataObject.length - 1].ma_hoc_sinh;
-                    // console.log(data);
-                    // data = [""]
-                    $.get(
-                        `https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.checkSll&mahocsinh=${mahocsinh}&tinh_id=${provinceid}&password=${id}&namhoc=2021`,
-                        function (data) {
-                            let dataObject = JSON.parse(data);
-                            console.log(dataObject);
-                            setTimeout(totalScore,1000);
-                        });
+                    // console.lo]
+                    // $.get(
+                    //     `https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.checkSll&mahocsinh=${mahocsinh}&tinh_id=${provinceid}&password=${id}&namhoc=2021`,
+                    //     function (data) {
+                    //         let dataObject = JSON.parse(data);
+                    //         console.log(dataObject);
+                    //         setTimeout(totalScore, 1000);
+                    //     });
+                    $.ajax({
+                        url: `https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.checkSll&mahocsinh=${mahocsinh}&tinh_id=${provinceid}&password=${id}&namhoc=2021`,
+                        type:"GET",
+                        xhrFields: {
+                            withCredentials: true,
+                        },
+                        crossDomain: true,
+                        headers: {
+                            "Cookie": cookie,
+                            "__Cookie": cookie
+                        }
+                    }).done((data) => {
+                        setTimeout(totalScore, 1000);
+                    });
 
                 }
             );
