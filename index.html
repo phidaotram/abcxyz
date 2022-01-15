@@ -12,8 +12,8 @@
 
 <body>
     <ul id="demo"></ul>
-    <input type="number" name="" id="input-id">
-    <input type="number" name="" id="input-province">
+    <input type="number" name="" id="input-id" placeholder="Số điện thoại" value="0983157153"> 
+    <input type="number" name="" id="input-province" placeholder="Mã số tỉnh" value="15">
     <button onclick="getData()">Get data</button>
     <button type="button" onclick="document.location.load()">Reset</button>
     <script>
@@ -32,7 +32,7 @@
                 },
                 function (data) {
                     let dataObject = JSON.parse(data);
-                    console.log(dataObject.diem);
+                    console.log(dataObject);
                 }
             );
         }
@@ -45,21 +45,27 @@
                     let dataObject = JSON.parse(data);
                     console.log(id);
                     for (var index of dataObject) {
-                        $("#demo").append(`<li>Tên học sinh thứ ${biendem}: ${index.full_name}</li>`);
-                        $("#demo").append(`<li>Tên lớp thứ ${biendem}: ${index.ten_lop}</li>`);
-                        $("#demo").append(`<li>Tên trường thứ ${biendem}: ${index.ten_truong}</li>`);
-                        $("#demo").append(`<li>Tên cấp thứ ${biendem}: ${index.cap}</li>`);
-                        $("#demo").append(`<li>Tên huyện thứ ${biendem}: ${index.ten_huyen}</li>`);
-                        $("#demo").append(`<li>Tên thành phố thứ ${biendem}: ${index.ten_tinh}</li>`);
-                        $("#demo").append(`<li>Năm học thứ ${biendem}: ${index.nam_hoc}</li>`);
-                        $("#demo").append(`<li>Mã học sinh thứ ${biendem}: ${index.ma_hoc_sinh}</li>`);
+                        $("#demo").append(`<li>Tên học sinh [${biendem}]: ${index.full_name}</li>`);
+                        $("#demo").append(`<li>Tên lớp [${biendem}]: ${index.ten_lop}</li>`);
+                        $("#demo").append(`<li>Tên trường [${biendem}]: ${index.ten_truong}</li>`);
+                        $("#demo").append(`<li>Tên cấp [${biendem}]: ${index.cap}</li>`);
+                        $("#demo").append(`<li>Tên huyện [${biendem}]: ${index.ten_huyen}</li>`);
+                        $("#demo").append(`<li>Tên thành phố [${biendem}]: ${index.ten_tinh}</li>`);
+                        $("#demo").append(`<li>Năm học [${biendem}]: ${index.nam_hoc}</li>`);
+                        $("#demo").append(`<li>Mã học sinh [${biendem}]: ${index.ma_hoc_sinh}</li>`);
                         biendem++;
                     }
                     mahocsinh = dataObject[dataObject.length - 1].ma_hoc_sinh;
                     // console.log(data);
                     // data = [""]
-                    $.get(`https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.checkSll&mahocsinh=${mahocsinh}&tinh_id=${provinceid}&password=${id}&namhoc=2021`,
-                        totalScore);
+                    $.get(
+                        `https://hocbadientu.vnedu.vn/sllservices/index.php?call=solienlac.checkSll&mahocsinh=${mahocsinh}&tinh_id=${provinceid}&password=${id}&namhoc=2021`,
+                        function (data) {
+                            let dataObject = JSON.parse(data);
+                            console.log(dataObject);
+                            setTimeout(totalScore,1000);
+                        });
+
                 }
             );
         }
